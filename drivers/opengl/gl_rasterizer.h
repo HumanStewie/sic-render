@@ -1,4 +1,8 @@
 #pragma once
+#include <glad/gl.h>
+
+#include "core/shader.h"
+
 
 class GL_Rasterizer {
 public:
@@ -8,9 +12,11 @@ public:
     void Draw();
 
 private:
-    unsigned int vertexShader{};
-    unsigned int fragmentShader{};
-    unsigned int VBO{};
-    unsigned int VAO{};
-    unsigned int shaderProgram{};
+    GLuint vertexShader{};
+    GLuint fragmentShader{};
+    GLuint VAO{};
+    GLuint VBO{};
+    GLuint EBO{};
+    GLuint shaderProgram{};
+    Shader triangleShader;
 };

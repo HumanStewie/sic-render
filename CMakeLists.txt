@@ -22,10 +22,7 @@ add_subdirectory("vendors/glfw-3.4")
 add_subdirectory("vendors/glad")
 
 # Add project subdirectories
+add_subdirectory("core")
 add_subdirectory("drivers")
 add_subdirectory("engines")
 add_subdirectory("main")
-
-
-# Compile definitions
-target_compile_definitions(sic_render PUBLIC RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources")

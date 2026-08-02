@@ -1,4 +1,5 @@
 #pragma once
+#include <print>
 
 #include "drivers/opengl/gl_rasterizer.h"
 
@@ -6,11 +7,11 @@ class RenderingEngine {
 protected:
 
 public:
-    RenderingEngine() {}
+    RenderingEngine();
     ~RenderingEngine() {}
 
     void Draw();
 
 private:
-    GL_Rasterizer m_Rasterizer{};
+    std::unique_ptr<GL_Rasterizer> m_Rasterizer;
 };
