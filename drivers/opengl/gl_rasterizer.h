@@ -17,6 +17,7 @@ private:
     GLuint VAO{};
     GLuint VBO{};
     GLuint EBO{};
-    GLuint shaderProgram{};
-    Shader triangleShader;
+    GLuint texture;
+    GLuint texture2;
+    Shader shader;
 };

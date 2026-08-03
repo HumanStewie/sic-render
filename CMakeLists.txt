@@ -20,6 +20,7 @@ set(GLFW_USE_HYBRID_HPG ON CACHE BOOL "" FORCE)
 # Add vendor subdirectories
 add_subdirectory("vendors/glfw-3.4")
 add_subdirectory("vendors/glad")
+add_subdirectory("vendors/stb_image")
 
 # Add project subdirectories
 add_subdirectory("core")

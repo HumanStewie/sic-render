@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <print>
+#include <cassert>
 
 #include "shader.h"
 
@@ -73,5 +74,20 @@ void Shader::use() {
 }
 
 void Shader::SetFloat(const std::string& name, float value) {
-	glUniform1f(glGetUniformLocation(m_shaderProgram, name.c_str()), value);
+	GLint location{ glGetUniformLocation(m_shaderProgram, name.c_str()) };
+	assert(location != -1 && "Could not locate uniform. Did you declare an uniform in the shader?");
+	glUniform1f(location, value);
+}
+
+void Shader::SetInt(const std::string& name, int value) {
+	GLint location{ glGetUniformLocation(m_shaderProgram, name.c_str()) };
+	assert(location != -1 && "Could not locate uniform. Did you declare an uniform in the shader?");
+	glUniform1i(location, value);
+}
+void Shader::SetSampler2D(const std::string& name, int value) {
+	Shader::SetInt(name, value);
+}
+
+Shader::~Shader() {
+	glDeleteProgram(m_shaderProgram);
 }
