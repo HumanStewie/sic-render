@@ -1,7 +1,6 @@
 #include "game_engine.h"
 
 #include <GLFW/glfw3.h>
-#include <print>
 
 void GameEngine::Update() {
     HandleInput(m_Window.GetWindow());

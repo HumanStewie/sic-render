@@ -8,10 +8,13 @@ out vec3 ourPosition;
 out vec3 ourColor;
 out vec2 ourTexCoord;
 
+uniform mat4 uTransformMatrix;
+
 void main()
 {
 	ourColor = aColor;
 	ourPosition = aPos;
 	ourTexCoord = aTexCoord;
-	gl_Position = vec4(aPos, 1.0);
+	
+	gl_Position = uTransformMatrix * vec4(aPos, 1.0);
 }

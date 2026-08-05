@@ -4,4 +4,4 @@ target_compile_definitions(core PUBLIC RESOURCES_PATH="${CMAKE_SOURCE_DIR}/resou
 
 target_include_directories(core PUBLIC ${CMAKE_SOURCE_DIR})
 
-target_link_libraries(core PUBLIC glad)
+target_link_libraries(core PUBLIC glad PRIVATE glm)

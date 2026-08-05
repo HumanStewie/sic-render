@@ -1,4 +1,5 @@
 #include <glad/gl.h>
+#include <glm/gtc/type_ptr.hpp>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -74,20 +75,71 @@ void Shader::use() {
 }
 
 void Shader::SetFloat(const std::string& name, float value) {
-	GLint location{ glGetUniformLocation(m_shaderProgram, name.c_str()) };
-	assert(location != -1 && "Could not locate uniform. Did you declare an uniform in the shader?");
-	glUniform1f(location, value);
+	glUniform1f(Shader::GetLocation(name), value);
 }
 
 void Shader::SetInt(const std::string& name, int value) {
-	GLint location{ glGetUniformLocation(m_shaderProgram, name.c_str()) };
-	assert(location != -1 && "Could not locate uniform. Did you declare an uniform in the shader?");
-	glUniform1i(location, value);
+	glUniform1i(Shader::GetLocation(name), value);
 }
 void Shader::SetSampler2D(const std::string& name, int value) {
 	Shader::SetInt(name, value);
 }
 
+// ---Vec2D--------------
+void Shader::SetVec2f(const std::string& name, int numberOfVectors, const glm::vec2& vectors)  {
+	glUniform2fv(Shader::GetLocation(name), numberOfVectors, glm::value_ptr(vectors));
+}
+void Shader::SetVec2f(const std::string& name, const glm::vec2& vector) {
+	Shader::SetVec2f(name, 1, vector);
+}
+void Shader::SetVec2f(const std::string& name, float x, float y) {
+	glUniform2f(Shader::GetLocation(name), x, y);
+}
+
+// ---Vec4D--------------
+void Shader::SetVec3f(const std::string& name, int numberOfVectors, const glm::vec3& vectors)  {
+	glUniform3fv(Shader::GetLocation(name), numberOfVectors, glm::value_ptr(vectors));
+}
+void Shader::SetVec3f(const std::string& name, const glm::vec3& vector) {
+	Shader::SetVec3f(name, 1, vector);
+}
+void Shader::SetVec3f(const std::string& name, float x, float y, float z) {
+	glUniform3f(Shader::GetLocation(name), x, y, z);
+}
+
+// ---Vec4D--------------
+void Shader::SetVec4f(const std::string& name, int numberOfVectors, const glm::vec4& vectors)  {
+	glUniform4fv(Shader::GetLocation(name), numberOfVectors, glm::value_ptr(vectors));
+}
+void Shader::SetVec4f(const std::string& name, const glm::vec4& vector) {
+	Shader::SetVec4f(name, 1, vector);
+}
+void Shader::SetVec4f(const std::string& name, float x, float y, float z, float w) {
+	glUniform4f(Shader::GetLocation(name), x, y, z, w);
+}
+// ---Mat2D--------------
+void Shader::SetMat2f(const std::string& name, int numberOfMatrices, GLboolean isTransposed, const glm::mat2& matrices) {
+	glUniformMatrix4fv(Shader::GetLocation(name), numberOfMatrices, isTransposed, glm::value_ptr(matrices));
+}
+void Shader::SetMat2f(const std::string& name, const glm::mat4& matrices) {
+	Shader::SetMat2f(name, 1, GL_FALSE, matrices);
+}
+
+// ---Mat3D--------------
+void Shader::SetMat3f(const std::string& name, int numberOfMatrices, GLboolean isTransposed, const glm::mat3& matrices) {
+	glUniformMatrix4fv(Shader::GetLocation(name), numberOfMatrices, isTransposed, glm::value_ptr(matrices));
+}
+void Shader::SetMat3f(const std::string& name, const glm::mat4& matrices) {
+	Shader::SetMat3f(name, 1, GL_FALSE, matrices);
+}
+
+// ---Mat4D--------------
+void Shader::SetMat4f(const std::string& name, int numberOfMatrices, GLboolean isTransposed, const glm::mat4& matrices) {
+	glUniformMatrix4fv(Shader::GetLocation(name), numberOfMatrices, isTransposed, glm::value_ptr(matrices));
+}
+void Shader::SetMat4f(const std::string& name, const glm::mat4& matrices) {
+	Shader::SetMat4f(name, 1, GL_FALSE, matrices);
+}
 Shader::~Shader() {
 	glDeleteProgram(m_shaderProgram);
 }

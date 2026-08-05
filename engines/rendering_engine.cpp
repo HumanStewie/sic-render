@@ -1,5 +1,7 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+#include <print>
+
 #include "rendering_engine.h"
 
 RenderingEngine::RenderingEngine() : m_Rasterizer{} {

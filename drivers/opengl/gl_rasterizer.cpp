@@ -1,17 +1,23 @@
 #include <glad/gl.h>
+#include <GLFW/glfw3.h>
 #include <print>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "gl_rasterizer.h" 
 #include "core/shader.h"
+#include "glm/trigonometric.hpp"
 #include "vendors/stb_image/stb_image.h"
 
 GL_Rasterizer::GL_Rasterizer() : shader{ RESOURCES_PATH "/shaders/triangle.vert", RESOURCES_PATH "/shaders/triangle.frag" } {
     float vertices[] = {
         // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f,   // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f,   // bottom right
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f    // top left 
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
     };
 
     unsigned int indices[] = {  // note that we start from 0!
@@ -50,8 +56,8 @@ GL_Rasterizer::GL_Rasterizer() : shader{ RESOURCES_PATH "/shaders/triangle.vert"
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
@@ -67,8 +73,8 @@ GL_Rasterizer::GL_Rasterizer() : shader{ RESOURCES_PATH "/shaders/triangle.vert"
     glBindTexture(GL_TEXTURE_2D, texture2);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     data = stbi_load(RESOURCES_PATH "/assets/ehe.png", &width, &height, &nrChannels, 0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -76,6 +82,7 @@ GL_Rasterizer::GL_Rasterizer() : shader{ RESOURCES_PATH "/shaders/triangle.vert"
     }
     else std::println("Cannot find image");
     stbi_image_free(data);
+
 
     shader.use();   
     shader.SetSampler2D("uTexture1", 0);
@@ -86,8 +93,12 @@ void GL_Rasterizer::Draw() {
     glClearColor(0.2f, 0.2f, 0.17f, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3{ 0.5f, 0.5f, 0.0f });    
+    trans = glm::scale(trans, glm::vec3(glm::abs(glm::sin((float)glfwGetTime())), glm::abs(glm::sin((float)glfwGetTime())), 1.0f));
     shader.use();
+    shader.SetMat4f("uTransformMatrix", trans);
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
     glActiveTexture(GL_TEXTURE1);
@@ -95,6 +106,13 @@ void GL_Rasterizer::Draw() {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+    trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3{ -0.5f, -0.5f, 0.0f });    
+    trans = glm::rotate(trans, 3.0f * glm::radians((float)glm::sin(glfwGetTime())), glm::vec3(0, 0, 1.0f));  
+    shader.use();
+    shader.SetMat4f("uTransformMatrix", trans);
+    
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 GL_Rasterizer::~GL_Rasterizer() {
