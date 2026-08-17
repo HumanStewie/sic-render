@@ -28,6 +28,7 @@ add_subdirectory("vendors/glfw-3.4")
 add_subdirectory("vendors/glad")
 add_subdirectory("vendors/stb_image")
 add_subdirectory("vendors/glm")
+include_directories("${CMAKE_SOURCE_DIR}/vendors/glm")
 
 # Add project subdirectories
 add_subdirectory("core")

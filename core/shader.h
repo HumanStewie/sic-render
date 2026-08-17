@@ -1,7 +1,7 @@
 #pragma once
-
 #include <glad/gl.h>
 #include <string>
+#include <cassert>
 
 #include <glm/gtc/type_ptr.hpp>
 
