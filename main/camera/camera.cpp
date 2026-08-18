@@ -1,5 +1,4 @@
 #include "camera.h"
-#include "glm/ext/quaternion_geometric.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,7 +6,7 @@
 
 Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& cameraFront, const glm::vec3& cameraUp, float movementSpeed, float sensitivity, float fov)
     : m_position{cameraPos}, m_front{cameraFront}, m_up{cameraUp}, m_speed{movementSpeed}, m_sensitivity{sensitivity}, m_fov{fov} {
-        UpdateCameraVectors();
+        Update();
     }
 
 void Camera::HandleCameraKey(CameraMovement direction, float deltaTime) {
@@ -34,10 +33,10 @@ void Camera::HandleCameraMouse(double xOffset, double yOffset) {
     m_pitch += yOffset;
     if (m_pitch > 89.0f) m_pitch = 89.0f;
     if (m_pitch < -89.0f) m_pitch = -89.0f;
-    UpdateCameraVectors();
+    Update();
 }
 
-void Camera::UpdateCameraVectors() {
+void Camera::Update(){
     glm::vec3 direction{
         std::cos(glm::radians(m_yaw)) * std::cos(glm::radians(m_pitch)),
         std::sin(glm::radians(m_pitch)),
@@ -46,7 +45,4 @@ void Camera::UpdateCameraVectors() {
     m_front = glm::normalize(direction);
     m_right = glm::normalize(glm::cross(m_front, m_up));
     m_trueUp = glm::normalize(glm::cross(m_right, m_front));
-}
-void Camera::Update(){
-
 }

@@ -15,7 +15,6 @@ public:
     Camera(const glm::vec3& cameraPos, const glm::vec3& cameraFront, const glm::vec3& cameraUp, float movementSpeed = 2.5f, float sensitivity = 0.1f, float fov = 60.0f);
     void HandleCameraKey(CameraMovement direction, float deltaTime);
     void HandleCameraMouse(double xOffset, double yOffset);
-    void UpdateCameraVectors();
     void Update();
     glm::mat4 GetLookAt() {
         return glm::lookAt(m_position, m_front + m_position, m_trueUp);

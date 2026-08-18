@@ -19,7 +19,6 @@ void GameEngine::Update() {
 
     // Camera Update
     m_Camera.Update();
-    m_Camera.UpdateCameraVectors();
 
     // Data Update
     m_DrawData.view = m_Camera.GetLookAt();
