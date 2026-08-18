@@ -7,7 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "gl_rasterizer.h" 
-#include "core/shader.h"
+#include "core/shader/shader.h"
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/trigonometric.hpp"
 #include "vendors/stb_image/stb_image.h"
 
@@ -124,7 +125,7 @@ GL_Rasterizer::GL_Rasterizer() : shader{ RESOURCES_PATH "/shaders/triangle.vert"
     glEnable(GL_DEPTH_TEST);
 }
 
-void GL_Rasterizer::Draw() {
+void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection) {
     glClearColor(0.2f, 0.2f, 0.17f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::vec3 cubePositions[] = {
@@ -139,10 +140,13 @@ void GL_Rasterizer::Draw() {
         glm::vec3(1.5f,  0.2f, -1.5f),
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
-    glm::mat4 view{ glm::mat4(1.0f) };
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    // glm::vec3 cameraPos { 0, 0, 3.0f };
+    // glm::vec3 cameraFront { 0, 0, -1.0f };
+    // glm::vec3 cameraUp { 0, 1.0f, 0 };
 
-    glm::mat4 projection{ glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f) };
+    // glm::mat4 view { glm::lookAt(cameraPos, cameraFront + cameraPos, cameraUp) };
+
+    // glm::mat4 projection{ glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f) };
 
     shader.use();
     shader.SetMat4f("view", view);

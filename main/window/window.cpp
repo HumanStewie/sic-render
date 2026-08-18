@@ -22,7 +22,7 @@ Window::Window(int width, int height) {
         return;
     }
     glfwMakeContextCurrent(m_GLFWwin);
-
+    glfwSetInputMode(m_GLFWwin, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetFramebufferSizeCallback(m_GLFWwin, framebuffer_size_callback);
 }
 

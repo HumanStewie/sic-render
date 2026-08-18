@@ -3,6 +3,7 @@
 #include <print>
 
 #include "rendering_engine.h"
+#include "core/data/draw_data.h"
 
 RenderingEngine::RenderingEngine() : m_Rasterizer{} {
     if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
@@ -12,6 +13,6 @@ RenderingEngine::RenderingEngine() : m_Rasterizer{} {
     m_Rasterizer = std::make_unique<GL_Rasterizer>();
 }
 
-void RenderingEngine::Draw() {
-    m_Rasterizer->Draw();
+void RenderingEngine::Draw(DrawData& drawData) {
+    m_Rasterizer->Draw(drawData.view, drawData.project);
 }
