@@ -1,19 +1,23 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include <array>
 
 struct Input {
-    bool firstMouse{true};
-    float lastX{};
-    float lastY{};
+public:
     float xOffset{};
     float yOffset{};
-    GLFWwindow* m_window{nullptr};
-
     Input(GLFWwindow* window);
     // bool GetKeyPressed(GLint keyPressed);
     bool GetKeyDown(int keyDown);
     void Update();
     void ClearKeyInputs();
-    void GetMousePos(float xpos, float ypos);
+
+private:
+    std::array<bool, 350> m_keyDown{};
+    GLFWwindow* m_window{nullptr};
+    bool m_firstMouse{true};
+    float m_lastX{};
+    float m_lastY{};
+    void UpdateMousePos(float xpos, float ypos);
 };

@@ -15,9 +15,9 @@ private:
     GLuint vertexShader{};
     GLuint fragmentShader{};
     GLuint VAO{};
+    GLuint lightVAO{};
     GLuint VBO{};
     GLuint EBO{};
-    GLuint texture;
-    GLuint texture2;
     Shader shader;
+    Shader lightShader;
 };

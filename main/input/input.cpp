@@ -1,58 +1,48 @@
 #include "input.h"
 #include "GLFW/glfw3.h"
 #include <algorithm>
-#include <array>
 
-namespace InputVariables {
-    std::array<bool, 350> g_keyDown{};
-    struct MousePos {
-
-    };
-};
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (action == GLFW_PRESS) 
-        InputVariables::g_keyDown[key] = true;
-    if (action == GLFW_RELEASE)
-        InputVariables::g_keyDown[key] = false;
-    
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-   
-}
+// void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+// {
+//     if (action == GLFW_PRESS) 
+//         InputVariables::g_keyDown[key] = true;
+//     if (action == GLFW_RELEASE)
+//         InputVariables::g_keyDown[key] = false;
+// }
 
 Input::Input(GLFWwindow* window) : m_window{window} {
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
 }
 
 bool Input::GetKeyDown(int key) {
-    return InputVariables::g_keyDown[key];
+    if (glfwGetKey(m_window, key) == GLFW_PRESS)
+        m_keyDown[key] = true;
+
+    if (glfwGetKey(m_window, key) == GLFW_RELEASE)
+        m_keyDown[key] = false;
+    return m_keyDown[key];
 }
 
-void Input::GetMousePos(float xpos, float ypos) {
-    if (firstMouse)
+void Input::UpdateMousePos(float xpos, float ypos) {
+    if (m_firstMouse)
     {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
+        m_lastX = xpos;
+        m_lastY = ypos;
+        m_firstMouse = false;
     }
 
-    xOffset = xpos - lastX;
-    yOffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    xOffset = xpos - m_lastX;
+    yOffset = m_lastY - ypos; // reversed since y-coordinates go from bottom to top
 
-    lastX = xpos;
-    lastY = ypos;
+    m_lastX = xpos;
+    m_lastY = ypos;
 }
 
 void Input::Update() {
     double xpos, ypos;
     glfwGetCursorPos(m_window, &xpos, &ypos);
-    GetMousePos(xpos, ypos);
+    UpdateMousePos(xpos, ypos);
 }
 
 void Input::ClearKeyInputs() {
-    std::ranges::fill(InputVariables::g_keyDown, false);
+    std::ranges::fill(m_keyDown, false);
 }

@@ -14,8 +14,8 @@ GameEngine::GameEngine(int width, int height)
 
 void GameEngine::Update() {
     // Input Update
-    HandleInput(m_Window.GetWindow());
     m_Input.Update();
+    HandleInput(m_Window.GetWindow());
 
     // Camera Update
     m_Camera.Update();
@@ -46,9 +46,9 @@ void GameEngine::HandleInput(GLFWwindow* window) {
         m_Camera.HandleCameraKey(CameraMovement::LEFT, deltaTime);
     if (m_Input.GetKeyDown(GLFW_KEY_D))
         m_Camera.HandleCameraKey(CameraMovement::RIGHT, deltaTime);
-    if (m_Input.GetKeyDown(GLFW_KEY_Q))
+    if (m_Input.GetKeyDown(GLFW_KEY_SPACE) || m_Input.GetKeyDown(GLFW_KEY_E))
         m_Camera.HandleCameraKey(CameraMovement::UP, deltaTime);
-    if (m_Input.GetKeyDown(GLFW_KEY_E))
+    if (m_Input.GetKeyDown(GLFW_KEY_LEFT_SHIFT) || m_Input.GetKeyDown(GLFW_KEY_Q))
         m_Camera.HandleCameraKey(CameraMovement::DOWN, deltaTime);
 
     m_Camera.HandleCameraMouse(m_Input.xOffset, m_Input.yOffset);

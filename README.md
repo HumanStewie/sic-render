@@ -8,3 +8,5 @@ I have always loved the PS1/PS2 aesthetic in video games. The jagged edges, the 
 - GLAD2
 - GLFW 3.4
 - C++23
+- GLM 1.0.3
+- stb_image
