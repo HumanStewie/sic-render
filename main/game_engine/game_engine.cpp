@@ -9,7 +9,9 @@ GameEngine::GameEngine(int width, int height)
     : m_Window{ width, height }, m_RenderingEngine{}
     , m_Camera{glm::vec3(0, 0, 3.0f), glm::vec3(0, 0, -1.0f), glm::vec3(0, 1.0f, 0)}
     , m_Input{m_Window.GetWindow()}
-    , m_DrawData{m_Camera.GetLookAt(), glm::perspective(glm::radians(45.0f), static_cast<float>(width) / height, 0.1f, 100.0f)}
+    , m_DrawData{m_Camera.GetLookAt(), 
+              glm::perspective(glm::radians(45.0f), static_cast<float>(width) / height, 0.1f, 100.0f),
+            m_Camera.GetPosition()}
     {}
 
 void GameEngine::Update() {
@@ -22,7 +24,8 @@ void GameEngine::Update() {
 
     // Data Update
     m_DrawData.view = m_Camera.GetLookAt();
-    
+    m_DrawData.viewPos = m_Camera.GetPosition();
+
     // Rendering Engine Update
     m_RenderingEngine.Draw(m_DrawData);
 

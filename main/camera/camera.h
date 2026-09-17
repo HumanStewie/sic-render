@@ -20,6 +20,7 @@ public:
         return glm::lookAt(m_position, m_front + m_position, m_trueUp);
     }
     void CursorCallback(double xpos, double ypos);
+    glm::vec3 GetPosition() { return m_position; }
 private:
     float m_speed {2.5f};
     float m_sensitivity{};

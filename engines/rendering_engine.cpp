@@ -14,5 +14,5 @@ RenderingEngine::RenderingEngine() : m_Rasterizer{} {
 }
 
 void RenderingEngine::Draw(DrawData& drawData) {
-    m_Rasterizer->Draw(drawData.view, drawData.project);
+    m_Rasterizer->Draw(drawData.view, drawData.project, drawData.viewPos);
 }

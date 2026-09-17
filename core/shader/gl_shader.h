@@ -2,13 +2,14 @@
 #include <glad/gl.h>
 #include <string>
 #include <cassert>
+#include <print>
 
 #include <glm/gtc/type_ptr.hpp>
 
-class Shader {
+class GL_Shader {
 public:
-	Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-	~Shader();
+	GL_Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+	~GL_Shader();
 	void use();
 
 	void SetFloat(const std::string& name, float value);

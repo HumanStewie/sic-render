@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/gl.h>
 #include <glm/glm.hpp>
-#include "core/shader/shader.h"
+#include "core/shader/gl_shader.h"
 
 
 class GL_Rasterizer {
@@ -9,7 +9,7 @@ public:
     GL_Rasterizer();
     ~GL_Rasterizer();
 
-    void Draw(const glm::mat4& view, const glm::mat4& projection);
+    void Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos);
 
 private:
     GLuint vertexShader{};
@@ -18,6 +18,6 @@ private:
     GLuint lightVAO{};
     GLuint VBO{};
     GLuint EBO{};
-    Shader shader;
-    Shader lightShader;
+    GL_Shader shader;
+    GL_Shader lightShader;
 };

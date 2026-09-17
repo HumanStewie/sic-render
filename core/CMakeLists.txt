@@ -1,4 +1,4 @@
-add_library(core "shader/shader.cpp")
+add_library(core "shader/gl_shader.cpp")
 
 target_compile_definitions(core PUBLIC RESOURCES_PATH="${CMAKE_SOURCE_DIR}/resources")
 
