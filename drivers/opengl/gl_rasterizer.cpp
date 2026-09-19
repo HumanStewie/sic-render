@@ -103,7 +103,7 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
     glm::mat4 model = glm::mat4(1.0f);
     {
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.f, 0.f));
+        // model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.f, 0.f));
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
         lightShader.use();
@@ -121,8 +121,8 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
         shader.SetMat4f("model", model);
         shader.SetMat4f("view", view);
         shader.SetMat4f("projection", projection);
-        shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
-        // shader.SetVec3f("lightPos", lightPos);
+        // shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
+        shader.SetVec3f("lightPos", lightPos);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
