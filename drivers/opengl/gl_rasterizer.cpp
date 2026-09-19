@@ -122,7 +122,7 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
         shader.SetMat4f("view", view);
         shader.SetMat4f("projection", projection);
         shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
-        shader.SetVec3f("viewPos", cameraPos);
+        // shader.SetVec3f("lightPos", lightPos);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
