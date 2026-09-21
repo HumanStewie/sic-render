@@ -18,6 +18,9 @@ private:
     GLuint lightVAO{};
     GLuint VBO{};
     GLuint EBO{};
+    GLuint diffuseMap{};
+    GLuint specularMap{};
+    GLuint emissionMap{};
     GL_Shader shader;
     GL_Shader lightShader;
 };
