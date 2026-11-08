@@ -25,6 +25,7 @@ void GameEngine::Update() {
     // Data Update
     m_DrawData.view = m_Camera.GetLookAt();
     m_DrawData.viewPos = m_Camera.GetPosition();
+    m_DrawData.cameraFront = m_Camera.GetFront();
 
     // Rendering Engine Update
     m_RenderingEngine.Draw(m_DrawData);

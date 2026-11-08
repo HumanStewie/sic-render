@@ -64,6 +64,7 @@ GL_Shader::GL_Shader(const std::string& vertexShaderPath, const std::string& fra
 	if (!success) {
 		glGetProgramInfoLog(m_shaderProgram, 512, NULL, infoLog);
 		std::println("ERROR::SHADER::PROGRAM::COMPILATION_FAILED\n{}", infoLog);
+		assert(success && "Something went wrong with linking Shader Program, could be syntax errors.");
 	}
 
 	glDeleteShader(vertexShader);

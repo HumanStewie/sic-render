@@ -21,6 +21,7 @@ public:
     }
     void CursorCallback(double xpos, double ypos);
     glm::vec3 GetPosition() { return m_position; }
+    glm::vec3 GetFront() { return m_front; }
 private:
     float m_speed {2.5f};
     float m_sensitivity{};

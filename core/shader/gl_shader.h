@@ -40,6 +40,7 @@ private:
 		GLint location{ glGetUniformLocation(m_shaderProgram, name.c_str()) };
 		if (location == -1)
 			std::println("Unable to locate {0}", name);
+		// assert(location != -1);
 		return location;
 	}
 };

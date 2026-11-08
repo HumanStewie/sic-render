@@ -19,6 +19,8 @@ GL_Rasterizer::GL_Rasterizer()
 {
     // --- GLOBAL SETTINGS ---
     glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable( GL_BLEND );
 
     float vertices[] {
         //  --- Position ---    --- Normal ---     -- UV --
@@ -159,7 +161,7 @@ GL_Rasterizer::GL_Rasterizer()
 }
 
 
-void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos) {
+void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos, const glm::vec3& cameraFront) {
     glClearColor(0.2f, 0.2f, 0.17f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -168,18 +170,6 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
     {
         // model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.f, 0.f));
         model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f));
-        lightShader.use();
-        lightShader.SetMat4f("model", model);
-        lightShader.SetMat4f("view", view);
-        lightShader.SetMat4f("projection", projection);
-        lightShader.SetVec3f("lightCubeColor", glm::vec3(1));
-        glBindVertexArray(lightVAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-        
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-1.0f, 2.0f, -3.0f));
         model = glm::scale(model, glm::vec3(0.2f));
         lightShader.use();
         lightShader.SetMat4f("model", model);
@@ -208,38 +198,48 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
             glm::vec3(1.5f,  0.2f, -1.5f),
             glm::vec3(-1.3f,  1.0f, -1.5f)
         };
-        for (int i{}; i < 10; i++) {
-            shader.use();
 
-            model = glm::mat4(1.0f);
+        shader.use();
+        shader.SetMat4f("view", view);
+        shader.SetMat4f("projection", projection);
+        // shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
+        shader.SetVec3f("viewPos", cameraPos);
+
+        shader.SetFloat("material.shininess", 32.0f);
+
+        shader.SetVec3f("light1.direction", -0.2f, -1.0f, -0.3f);
+        shader.SetVec3f("light1.ambient", 0.05, 0.05, 0.05);
+        shader.SetVec3f("light1.diffuse", 0.5, 0.5, 0.5); 
+        shader.SetVec3f("light1.specular", 1.0f, 1.0f, 1.0f); 
+        
+        shader.SetVec3f("light2.position", cameraPos);
+        shader.SetVec3f("light2.ambient", 0.3, 0.3, 0.3);
+        shader.SetVec3f("light2.diffuse", 0.5, 0.5, 0.5); 
+        shader.SetVec3f("light2.specular", 1.0f, 1.0f, 1.0f); 
+
+        shader.SetVec3f("light3.position", cameraPos);
+        shader.SetVec3f("light3.direction", cameraFront);
+        shader.SetVec3f("light3.ambient", 0.05, 0.05, 0.05);
+        shader.SetVec3f("light3.diffuse", 0.5, 0.5, 0.5); 
+        shader.SetVec3f("light3.specular", 1.0f, 1.0f, 1.0f); 
+        shader.SetFloat("light3.cutOff", glm::cos(glm::radians(12.5f)));
+        shader.SetFloat("light3.outerCutOff", glm::cos(glm::radians(17.5f)));
+
+
+        shader.SetFloat("time", time);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, emissionMap);
+        for (int i{}; i < 10; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
             model = glm::rotate(model, 20.0f * i, glm::vec3(1.0f, 0.3f, 0.5f));
             shader.SetMat4f("model", model);
-            shader.SetMat4f("view", view);
-            shader.SetMat4f("projection", projection);
-            // shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
-            shader.SetVec3f("viewPos", cameraPos);
-
-            shader.SetFloat("material.shininess", 32.0f);
-
-            shader.SetVec3f("light1.position", lightPos);
-            shader.SetVec3f("light1.ambient", 0.5, 0.5, 0.5);
-            shader.SetVec3f("light1.diffuse", 0.5, 0.5, 0.5); 
-            shader.SetVec3f("light1.specular", 1.0f, 1.0f, 1.0f); 
-
-            shader.SetVec3f("light2.position", glm::vec3(-1.0f, 2.0f, -3.0f));
-            shader.SetVec3f("light2.ambient", 0.5, 0.5, 0.5);
-            shader.SetVec3f("light2.diffuse", 0.5, 0.5, 0.5); 
-            shader.SetVec3f("light2.specular", 1.0f, 1.0f, 1.0f); 
-
-            shader.SetFloat("time", time);
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, diffuseMap);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, specularMap);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, emissionMap);
+            
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         }
         glBindVertexArray(0);

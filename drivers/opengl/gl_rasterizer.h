@@ -9,7 +9,7 @@ public:
     GL_Rasterizer();
     ~GL_Rasterizer();
 
-    void Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos);
+    void Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos, const glm::vec3& cameraFront);
 
 private:
     GLuint vertexShader{};
