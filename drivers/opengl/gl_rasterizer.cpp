@@ -9,7 +9,6 @@
 #include "core/shader/gl_shader.h"
 #include <glm/gtc/random.hpp>
 #include "glm/ext/matrix_transform.hpp"
-#include "glm/geometric.hpp"
 #include "vendors/stb_image/stb_image.h"
 
 // Set up Buffers
@@ -108,56 +107,15 @@ GL_Rasterizer::GL_Rasterizer()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
     // --- SETTING TEXTURES ---
-    glGenTextures(1, &diffuseMap);
-    glBindTexture(GL_TEXTURE_2D, diffuseMap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_set_flip_vertically_on_load(true);
-    int width, height, nrChannels;
-    unsigned char* data{ stbi_load(RESOURCES_PATH "/assets/container2.png", &width, &height, &nrChannels, 0) };
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else std::println("Cannot find image");
-    stbi_image_free(data);
-
-
-    glGenTextures(1, &specularMap);
-    glBindTexture(GL_TEXTURE_2D, specularMap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    data = stbi_load( RESOURCES_PATH "/assets/container2_specular.png", &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else std::println("Cannot find image");
-    stbi_image_free(data);
-
-    glGenTextures(1, &emissionMap);
-    glBindTexture(GL_TEXTURE_2D, emissionMap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    data = stbi_load( RESOURCES_PATH "/assets/matrix.jpg", &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else std::println("Cannot find image");
-    stbi_image_free(data);
+    diffuseMap = LoadTexture("/assets/container2.png", true);
+    specularMap = LoadTexture("/assets/container2_specular.png", true);
+    emissionMap = LoadTexture("/assets/matrix.jpg", true);
 
     shader.use();
     shader.SetSampler2D("material.diffuse", 0);
     shader.SetSampler2D("material.specular", 1);
     shader.SetSampler2D("material.emission", 2);
+    shader.SetFloat("material.shininess", 32.0f);
 }
 
 
@@ -205,28 +163,29 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
         // shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
         shader.SetVec3f("viewPos", cameraPos);
 
-        shader.SetFloat("material.shininess", 32.0f);
-
-        shader.SetVec3f("light1.direction", -0.2f, -1.0f, -0.3f);
-        shader.SetVec3f("light1.ambient", 0.05, 0.05, 0.05);
-        shader.SetVec3f("light1.diffuse", 0.5, 0.5, 0.5); 
-        shader.SetVec3f("light1.specular", 1.0f, 1.0f, 1.0f); 
+        // shader.SetVec3f("light1.direction", -0.2f, -1.0f, -0.3f);
+        // shader.SetVec3f("light1.ambient", 0.05, 0.05, 0.05);
+        // shader.SetVec3f("light1.diffuse", 0.5, 0.5, 0.5); 
+        // shader.SetVec3f("light1.specular", 1.0f, 1.0f, 1.0f); 
         
-        shader.SetVec3f("light2.position", cameraPos);
-        shader.SetVec3f("light2.ambient", 0.3, 0.3, 0.3);
-        shader.SetVec3f("light2.diffuse", 0.5, 0.5, 0.5); 
-        shader.SetVec3f("light2.specular", 1.0f, 1.0f, 1.0f); 
+        // shader.SetVec3f("light2.position", cameraPos);
+        // shader.SetVec3f("light2.ambient", 0.3, 0.3, 0.3);
+        // shader.SetVec3f("light2.diffuse", 0.5, 0.5, 0.5); 
+        // shader.SetVec3f("light2.specular", 1.0f, 1.0f, 1.0f); 
 
+        // Flash light
         shader.SetVec3f("light3.position", cameraPos);
         shader.SetVec3f("light3.direction", cameraFront);
-        shader.SetVec3f("light3.ambient", 0.05, 0.05, 0.05);
-        shader.SetVec3f("light3.diffuse", 0.5, 0.5, 0.5); 
+        shader.SetVec3f("light3.ambient", 0, 0, 0);
+        shader.SetVec3f("light3.diffuse", 1, 1, 1); 
         shader.SetVec3f("light3.specular", 1.0f, 1.0f, 1.0f); 
         shader.SetFloat("light3.cutOff", glm::cos(glm::radians(12.5f)));
         shader.SetFloat("light3.outerCutOff", glm::cos(glm::radians(17.5f)));
 
 
         shader.SetFloat("time", time);
+
+        shader.SetBool("seeThrough", false);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -248,7 +207,46 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
 
 }
 
+GLuint GL_Rasterizer::LoadTexture(const std::string& path, bool flip) {
+    GLuint texture{};
+
+    stbi_set_flip_vertically_on_load(flip);
+    int width, height, nrChannels;
+    unsigned char* data{ stbi_load((RESOURCES_PATH + path).c_str(), &width, &height, &nrChannels, 0) };
+    if (data) {
+        int colorFormat{};
+        switch (nrChannels) {
+        case 2:
+            colorFormat = GL_RG;
+            break;
+        case 3:
+            colorFormat = GL_RGB;
+            break;
+        case 4:
+            colorFormat = GL_RGBA;
+            break;
+        default:
+            std::println("What kind of image are you using??? (Number of Color Channels too high)");
+            break;
+        }
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, colorFormat, width, height, 0, colorFormat, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    else std::println("Cannot find image");
+    stbi_image_free(data);
+
+    return texture;
+}
+
 GL_Rasterizer::~GL_Rasterizer() {
     glDeleteBuffers(1, &VBO);
-    glDeleteVertexArrays(1, &VBO);
+    glDeleteVertexArrays(1, &VAO);
 }

@@ -43,6 +43,7 @@ uniform PointLight pointLights[4];
 uniform SpotLight light3;
 uniform vec3 viewPos;
 uniform float time;
+uniform bool seeThrough;
 
 float attenu(vec3 lightPos, float constant, float linear, float quadra) {
     float dist = distance(lightPos, FragPos);
@@ -111,7 +112,7 @@ vec3 spotShading(SpotLight light) {
 
     float theta = dot(normalize(-light.direction), lightDir);
     float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = (theta - light.outerCutOff) / epsilon;
+    float intensity = smoothstep(0.0, 1.0, (theta - light.outerCutOff) / epsilon);
     diffuse *= intensity;
     specular *= intensity;
     float attenuation = attenu(light.position, 1.0, 0.09, 0.032);
@@ -130,11 +131,12 @@ void main()
     for (int i = 0; i < 4; i++) {
         lighting += pointShading(pointLights[i]);
     }
-
-    lighting += spotShading(light3);
+    vec3 spot = spotShading(light3);
+    lighting += spot;
     vec3 emission = vec3(0);
-    if (vec3(texture(material.specular, TexCoords)) == vec3(0)) {
-        emission = vec3(texture(material.emission, vec2(TexCoords.x, TexCoords.y + time))) * 2.0;
+    if (vec3(texture(material.specular, TexCoords)) == vec3(0) && spot != vec3(0)) {
+        emission = vec3(texture(material.emission, vec2(TexCoords.x, TexCoords.y + time))) * 4.0 * spot;
     }
+    lighting += emission;
     FragColor = vec4(lighting, 1.0);
 }

@@ -85,6 +85,9 @@ void GL_Shader::SetInt(const std::string& name, int value) {
 void GL_Shader::SetSampler2D(const std::string& name, int value) {
 	GL_Shader::SetInt(name, value);
 }
+void GL_Shader::SetBool(const std::string& name, bool value) {
+	GL_Shader::SetInt(name, value);
+}
 
 // ---Vec2D--------------
 void GL_Shader::SetVec2f(const std::string& name, int numberOfVectors, const glm::vec2& vectors)  {

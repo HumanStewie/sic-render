@@ -55,6 +55,11 @@ void GameEngine::HandleInput(GLFWwindow* window) {
     if (m_Input.GetKeyDown(GLFW_KEY_LEFT_SHIFT) || m_Input.GetKeyDown(GLFW_KEY_Q))
         m_Camera.HandleCameraKey(CameraMovement::DOWN, deltaTime);
 
+    if (m_Input.GetKeyDown(GLFW_KEY_F)){
+        
+    }
+
+
     m_Camera.HandleCameraMouse(m_Input.xOffset, m_Input.yOffset);
 }
 

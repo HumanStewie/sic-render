@@ -15,6 +15,7 @@ public:
 	void SetFloat(const std::string& name, float value);
 	void SetInt(const std::string& name, int value);
 	void SetSampler2D(const std::string& name, int value);
+	void SetBool(const std::string& name, bool value);
 
 	void SetVec2f(const std::string& name, int numberOfVectors, const glm::vec2& vector);
 	void SetVec2f(const std::string& name, const glm::vec2& vector);
