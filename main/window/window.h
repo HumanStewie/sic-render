@@ -18,6 +18,9 @@ public:
 	void PollEvent() {
 		glfwPollEvents();
 	}
+	void CloseWindow() {
+		glfwSetWindowShouldClose(m_GLFWwin, true);
+	}
 	
 private:
 	GLFWwindow* m_GLFWwin{nullptr};

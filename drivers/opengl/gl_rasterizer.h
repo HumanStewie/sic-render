@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/gl.h>
 #include <glm/glm.hpp>
-#include <string_view>
+#include "core/data/rendering_data.h"
 #include "core/shader/gl_shader.h"
 
 
@@ -10,7 +10,7 @@ public:
     GL_Rasterizer();
     ~GL_Rasterizer();
 
-    void Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos, const glm::vec3& cameraFront);
+    void Draw(const RenderData::DrawData& drawData, const RenderData::InputData& inputData);
     GLuint LoadTexture(const std::string& path, bool flip);
 
 private:
@@ -25,4 +25,6 @@ private:
     GLuint emissionMap{};
     GL_Shader shader;
     GL_Shader lightShader;
+    float cutOff {12.5f};
+    float outer {17.5f};
 };

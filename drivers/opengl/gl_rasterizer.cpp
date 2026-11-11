@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "gl_rasterizer.h" 
+#include "core/data/rendering_data.h"
 #include "core/shader/gl_shader.h"
 #include <glm/gtc/random.hpp>
 #include "glm/ext/matrix_transform.hpp"
@@ -119,7 +120,7 @@ GL_Rasterizer::GL_Rasterizer()
 }
 
 
-void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPos, const glm::vec3& cameraFront) {
+void GL_Rasterizer::Draw(const RenderData::DrawData& drawData, const RenderData::InputData& inputData) {
     glClearColor(0.2f, 0.2f, 0.17f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -131,8 +132,8 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
         model = glm::scale(model, glm::vec3(0.2f));
         lightShader.use();
         lightShader.SetMat4f("model", model);
-        lightShader.SetMat4f("view", view);
-        lightShader.SetMat4f("projection", projection);
+        lightShader.SetMat4f("view", drawData.view);
+        lightShader.SetMat4f("projection", drawData.project);
         lightShader.SetVec3f("lightCubeColor", glm::vec3(1));
         glBindVertexArray(lightVAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -158,10 +159,10 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
         };
 
         shader.use();
-        shader.SetMat4f("view", view);
-        shader.SetMat4f("projection", projection);
+        shader.SetMat4f("view", drawData.view);
+        shader.SetMat4f("projection", drawData.project);
         // shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
-        shader.SetVec3f("viewPos", cameraPos);
+        shader.SetVec3f("viewPos", drawData.viewPos);
 
         // shader.SetVec3f("light1.direction", -0.2f, -1.0f, -0.3f);
         // shader.SetVec3f("light1.ambient", 0.05, 0.05, 0.05);
@@ -174,18 +175,19 @@ void GL_Rasterizer::Draw(const glm::mat4& view, const glm::mat4& projection, con
         // shader.SetVec3f("light2.specular", 1.0f, 1.0f, 1.0f); 
 
         // Flash light
-        shader.SetVec3f("light3.position", cameraPos);
-        shader.SetVec3f("light3.direction", cameraFront);
+        
+        shader.SetVec3f("light3.position", drawData.viewPos);
+        shader.SetVec3f("light3.direction", drawData.cameraFront);
         shader.SetVec3f("light3.ambient", 0, 0, 0);
         shader.SetVec3f("light3.diffuse", 1, 1, 1); 
         shader.SetVec3f("light3.specular", 1.0f, 1.0f, 1.0f); 
-        shader.SetFloat("light3.cutOff", glm::cos(glm::radians(12.5f)));
-        shader.SetFloat("light3.outerCutOff", glm::cos(glm::radians(17.5f)));
+        shader.SetFloat("light3.cutOff", glm::cos(glm::radians(cutOff)));
+        shader.SetFloat("light3.outerCutOff", glm::cos(glm::radians(outer)));
 
 
         shader.SetFloat("time", time);
 
-        shader.SetBool("seeThrough", false);
+        shader.SetBool("seeThrough", inputData.seeThrough);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);

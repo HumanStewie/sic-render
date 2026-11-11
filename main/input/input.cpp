@@ -14,11 +14,14 @@ Input::Input(GLFWwindow* window) : m_window{window} {
 }
 
 bool Input::GetKeyDown(int key) {
-    if (glfwGetKey(m_window, key) == GLFW_PRESS)
+    if (glfwGetKey(m_window, key) == GLFW_PRESS) {
         m_keyDown[key] = true;
+    }
 
-    if (glfwGetKey(m_window, key) == GLFW_RELEASE)
+    if (glfwGetKey(m_window, key) == GLFW_RELEASE) {
         m_keyDown[key] = false;
+        m_keyProcessed[key] = false;
+    }
     return m_keyDown[key];
 }
 

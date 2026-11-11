@@ -125,6 +125,7 @@ vec3 spotShading(SpotLight light) {
 }
 void main()
 {
+    if (!seeThrough && dot(viewPos - FragPos, Normal) < 0) discard;
     vec3 lighting = vec3(0);
     lighting += directionalShading(dirLight);
     
@@ -134,8 +135,11 @@ void main()
     vec3 spot = spotShading(light3);
     lighting += spot;
     vec3 emission = vec3(0);
-    if (vec3(texture(material.specular, TexCoords)) == vec3(0) && spot != vec3(0)) {
-        emission = vec3(texture(material.emission, vec2(TexCoords.x, TexCoords.y + time))) * 4.0 * spot;
+    if (vec3(texture(material.specular, TexCoords)) == vec3(0))
+        emission = vec3(texture(material.emission, vec2(TexCoords.x, TexCoords.y + time))) * 4.0;
+
+    if (spot != vec3(0)) {
+        if (seeThrough && dot(viewPos - FragPos, Normal) > 0) discard;
     }
     lighting += emission;
     FragColor = vec4(lighting, 1.0);
