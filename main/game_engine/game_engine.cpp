@@ -2,7 +2,6 @@
 #include "camera/camera.h"
 
 #include <GLFW/glfw3.h>
-#include <iostream>
 
 #include "engines/rendering_engine.h"
 
@@ -18,6 +17,10 @@ GameEngine::GameEngine(int width, int height)
         m_RenderingEngine.DrawData.project = glm::perspective(glm::radians(45.0f), static_cast<float>(width) / height, 0.1f, 100.0f);
         m_RenderingEngine.DrawData.viewPos = m_Camera.GetPosition();
     }
+
+void GameEngine::Init() {
+
+}
 
 void GameEngine::Update() {
     // Input Update

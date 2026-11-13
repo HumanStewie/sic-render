@@ -14,7 +14,7 @@
 
 // Set up Buffers
 GL_Rasterizer::GL_Rasterizer()
-    : shader{ RESOURCES_PATH "/shaders/box.vert", RESOURCES_PATH "/shaders/box.frag" },
+    : shader{ RESOURCES_PATH "/shaders/materials/StandardMaterial.vert", RESOURCES_PATH "/shaders/materials/StandardMaterial.frag" },
       lightShader { RESOURCES_PATH "/shaders/light.vert", RESOURCES_PATH "/shaders/light.frag" }
 {
     // --- GLOBAL SETTINGS ---
@@ -109,14 +109,10 @@ GL_Rasterizer::GL_Rasterizer()
     
     // --- SETTING TEXTURES ---
     diffuseMap = LoadTexture("/assets/container2.png", true);
-    specularMap = LoadTexture("/assets/container2_specular.png", true);
-    emissionMap = LoadTexture("/assets/matrix.jpg", true);
 
     shader.use();
-    shader.SetSampler2D("material.diffuse", 0);
-    shader.SetSampler2D("material.specular", 1);
-    shader.SetSampler2D("material.emission", 2);
-    shader.SetFloat("material.shininess", 32.0f);
+    shader.SetSampler2D("material.albedoMap", 0);
+
 }
 
 
@@ -139,10 +135,7 @@ void GL_Rasterizer::Draw(const RenderData::DrawData& drawData, const RenderData:
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
-    glm::vec4 newLightPos { model * glm::vec4{ lightPos, 1.f } };
     {
-        float time { (float)glfwGetTime() };
-
         glBindVertexArray(VAO);
 
          glm::vec3 cubePositions[] = {
@@ -161,40 +154,11 @@ void GL_Rasterizer::Draw(const RenderData::DrawData& drawData, const RenderData:
         shader.use();
         shader.SetMat4f("view", drawData.view);
         shader.SetMat4f("projection", drawData.project);
-        // shader.SetVec3f("lightPos", newLightPos.x, newLightPos.y, newLightPos.z);
-        shader.SetVec3f("viewPos", drawData.viewPos);
-
-        // shader.SetVec3f("light1.direction", -0.2f, -1.0f, -0.3f);
-        // shader.SetVec3f("light1.ambient", 0.05, 0.05, 0.05);
-        // shader.SetVec3f("light1.diffuse", 0.5, 0.5, 0.5); 
-        // shader.SetVec3f("light1.specular", 1.0f, 1.0f, 1.0f); 
-        
-        // shader.SetVec3f("light2.position", cameraPos);
-        // shader.SetVec3f("light2.ambient", 0.3, 0.3, 0.3);
-        // shader.SetVec3f("light2.diffuse", 0.5, 0.5, 0.5); 
-        // shader.SetVec3f("light2.specular", 1.0f, 1.0f, 1.0f); 
-
-        // Flash light
-        
-        shader.SetVec3f("light3.position", drawData.viewPos);
-        shader.SetVec3f("light3.direction", drawData.cameraFront);
-        shader.SetVec3f("light3.ambient", 0, 0, 0);
-        shader.SetVec3f("light3.diffuse", 1, 1, 1); 
-        shader.SetVec3f("light3.specular", 1.0f, 1.0f, 1.0f); 
-        shader.SetFloat("light3.cutOff", glm::cos(glm::radians(cutOff)));
-        shader.SetFloat("light3.outerCutOff", glm::cos(glm::radians(outer)));
-
-
-        shader.SetFloat("time", time);
-
-        shader.SetBool("seeThrough", inputData.seeThrough);
+      
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specularMap);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, emissionMap);
+      
         for (int i{}; i < 10; i++) {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);

@@ -10,6 +10,7 @@ I have always loved the PS1/PS2 aesthetic in video games. The jagged edges, the 
 - C++23
 - GLM 1.0.3
 - stb_image
+- Assimp 6.0.6
 
 ## TODO
 - **Optimize basic lightings:** As is every engine, I need to optimize the shaders for basic Phong Lighting.

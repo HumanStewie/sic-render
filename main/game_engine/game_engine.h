@@ -12,6 +12,7 @@ public:
     ~GameEngine(){}
     bool GameIsOpen() { return m_Window.WindowIsOpen(); }
     void Init();
+    void Shutdown();
     void Update();
     void HandleInput();
     void UpdateDeltaTime();
