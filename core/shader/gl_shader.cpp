@@ -82,6 +82,9 @@ void GL_Shader::SetFloat(const std::string& name, float value) {
 void GL_Shader::SetInt(const std::string& name, int value) {
 	glUniform1i(GL_Shader::GetLocation(name), value);
 }
+void GL_Shader::SetUInt(const std::string& name, unsigned int value) {
+	glUniform1ui(GL_Shader::GetLocation(name), value);
+}
 void GL_Shader::SetSampler2D(const std::string& name, int value) {
 	GL_Shader::SetInt(name, value);
 }

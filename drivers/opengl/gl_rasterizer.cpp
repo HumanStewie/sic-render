@@ -25,6 +25,11 @@ GL_Rasterizer::GL_Rasterizer()
     glEnable( GL_BLEND );
 }
 
+enum class LightTypes {
+    DirLight,
+    PointLight,
+    SpotLight
+};
 
 void GL_Rasterizer::Draw(const RenderData::DrawData& drawData, const RenderData::InputData& inputData) {
     glClearColor(0.2f, 0.2f, 0.17f, 1);
@@ -37,6 +42,16 @@ void GL_Rasterizer::Draw(const RenderData::DrawData& drawData, const RenderData:
     shader.SetMat4f("view", drawData.view);
     shader.SetMat4f("projection", drawData.project);
     shader.SetMat4f("model", modelMatrix);
+
+    shader.SetVec3f("viewPos", drawData.viewPos);
+
+    shader.SetVec3f("dirLight.direction", glm::vec3{1, -1, -1});
+    shader.SetVec3f("dirLight.ambient", glm::vec3{0.2f});
+    shader.SetVec3f("dirLight.diffuse", glm::vec3{0.8f});
+    shader.SetVec3f("dirLight.specular", glm::vec3{1});
+
+    shader.SetUInt("dirLight.type", static_cast<unsigned int>(LightTypes::DirLight));
+
     model.Draw(shader);
 }
 

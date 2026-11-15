@@ -14,6 +14,7 @@ public:
 
 	void SetFloat(const std::string& name, float value);
 	void SetInt(const std::string& name, int value);
+	void SetUInt(const std::string& name, unsigned int value);
 	void SetSampler2D(const std::string& name, int value);
 	void SetBool(const std::string& name, bool value);
 
