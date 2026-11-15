@@ -17,4 +17,5 @@ uniform StandardMaterial material;
 
 void main() {
     FragColor = texture(material.albedoMap, TexCoords);
+    // FragColor = vec4(1, 0, 1, 1); 
 }

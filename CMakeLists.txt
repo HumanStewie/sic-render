@@ -52,3 +52,31 @@ add_subdirectory("core")
 add_subdirectory("drivers")
 add_subdirectory("engines")
 add_subdirectory("main")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(sic_render PRIVATE
+        -O1
+        -fsanitize=address,undefined
+        -fno-omit-frame-pointer
+    )
+    target_link_options(sic_render PRIVATE
+        -fsanitize=address,undefined
+    )
+    if(CMAKE_C_COMPILER_LOADED)
+        set(LSAN_SUPP_FILE "${CMAKE_CURRENT_BINARY_DIR}/lsan_suppressions.c")
+    else()
+        set(LSAN_SUPP_FILE "${CMAKE_CURRENT_BINARY_DIR}/lsan_suppressions.cpp")
+    endif()
+
+    file(WRITE "${LSAN_SUPP_FILE}" [=[
+    #ifdef __cplusplus
+    extern "C"
+    #endif
+    __attribute__((used, visibility("default")))
+    const char *__lsan_default_options(void) {
+        return "detect_leaks=0";
+    }
+    ]=])
+
+        target_sources(sic_render PRIVATE "${LSAN_SUPP_FILE}")
+endif()

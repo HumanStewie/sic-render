@@ -13,6 +13,8 @@ Window::Window(int width, int height) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHintString(GLFW_WAYLAND_APP_ID, "sic_render");
+    glfwWindowHintString(GLFW_X11_CLASS_NAME, "sic_render");
 
     m_GLFWwin = glfwCreateWindow(width, height, "[sic]render", nullptr, nullptr);
 
